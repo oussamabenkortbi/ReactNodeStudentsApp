@@ -2,14 +2,26 @@ import { useState } from "react"
 import styles from "./Students.module.css"
 import { PenLine, Trash2 } from "lucide-react"
 import UpdateStudent from "../../components/UpdateStudent"
-import { getStudents } from "./studentsApiEndpoints"
+import { useDeleteStudentMutation, useGetStudentsQuery } from "./studentsApiEndpoints"
 
 export const Students = () => {
   const [updateModal, setUpdateModal] = useState(false);
   // Using a query hook automatically fetches data and returns query values
-  const { data, isError, isLoading, isSuccess } = getStudents.useQuery("");
+  const getStudents = useGetStudentsQuery("");
+  const [deleteStudent] = useDeleteStudentMutation();
 
-  if (isError) {
+  const handleUpdate = () => setUpdateModal(!updateModal);
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteStudent({ id });
+      getStudents.refetch();
+    } catch (err) {
+      console.error('Failed to delete student:', err);
+    }
+  };
+
+  if (getStudents.isError) {
     return (
       <div>
         <h1>There was an error!!!</h1>
@@ -17,7 +29,7 @@ export const Students = () => {
     )
   }
 
-  if (isLoading || !data) {
+  if (getStudents.isLoading || !getStudents.data) {
     return (
       <div>
         <h1>Loading...</h1>
@@ -25,7 +37,7 @@ export const Students = () => {
     )
   }
 
-  if (isSuccess) {
+  if (getStudents.isSuccess) {
     return (
       <div className={styles.container}>
         <div className="flex flex-col my-14">
@@ -57,13 +69,13 @@ export const Students = () => {
                 </div>
             </div>
 
-            {data.students.map((student) => (
+            {getStudents.data.students.map((student) => (
                 <div key={student.id} className="grid grid-cols-10 px-2 my-2 h-16 items-center sm:grid-cols-11 rounded-lg ">
                     <div className=" p-2 xl:py-2 col-span-2">
                         <p className="text-black text-lg ">{student.fullname}</p>
                     </div>
                     <div className=" p-2 xl:py-2 col-span-2">
-                        <p className="text-blue-500 text-lg font-medium">{student.birthdate.slice(0, 10)}</p>
+                        <p className="text-blue-500 text-lg font-medium">{student.birthdate}</p>
                     </div>
                     <div className=" p-2 xl:py-2 col-span-2">
                         <p className="text-black text-lg ">{student.subjects}</p>
@@ -81,20 +93,20 @@ export const Students = () => {
                     </div>
 
                     <div className=" items-center justify-center col-span-3 space-x-4 p-2 xl:py-3 xl:px-1">
-                        <button onClick={() => setUpdateModal(!updateModal)} className="hover:text-blue-500">
+                        <button onClick={handleUpdate} className="hover:text-blue-500">
                             <div className="group relative mx-1 mt-2 transform scale-100 hover:scale-110 transition-transform">
                                 <PenLine size={30} color="#666" />
                                 <span className="absolute top-8 right-0 w-22 scale-0 rounded-xl border border-blue-600 bg-white bg-opacity-90 p-1 px-2 text-md font-black text-sm text-center text-zinc-900 group-hover:scale-100">Update</span>
                             </div>
                         </button>
-                        <button className="hover:text-blue-500">
+                        <button onClick={() => handleDelete(student.id)} className="hover:text-blue-500">
                             <div className="group relative mx-1 mt-2 transform scale-100 hover:scale-110 transition-transform">
                                 <Trash2 size={30} color="#666" />
                                 <span className="absolute top-8 right-0 w-22 scale-0 rounded-xl border border-blue-600 bg-white bg-opacity-90 p-1 px-2 text-md font-black text-sm text-center text-zinc-900 group-hover:scale-100">Delete</span>
                             </div>
                         </button>
                     </div>
-                    {updateModal && <UpdateStudent updateModal={updateModal} setUpdateModal={setUpdateModal} />}
+                    {updateModal && <UpdateStudent student={student} updateModal={updateModal} setUpdateModal={setUpdateModal} />}
                 </div>
             ))}
         </div>

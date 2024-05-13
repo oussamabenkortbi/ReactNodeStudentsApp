@@ -9,6 +9,10 @@ interface Student {
   status: "paid" | "waiting" | "expired"
 }
 
+interface StudentsApiResponse {
+  students: Student[];
+}
+
 // Define a service using a base URL and expected endpoints
 export const studentsApiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:1337/api/v1/students" }),
@@ -23,12 +27,12 @@ export const studentsApiSlice = createApi({
         body: student,
       }),
     }),
-    getStudents: build.query<Student[], string>({
+    getStudents: build.query<StudentsApiResponse, string>({
       query: () => ``,
       providesTags: () => [{ type: "Students" }],
     }),
-    getStudent: build.query<Student, string>({
-      query: id => `${id}`,
+    getStudent: build.query<Student, Partial<Student>>({
+      query: student => `${student.id}`,
       providesTags: () => [{ type: "Student" }],
     }),
     updateStudent: build.mutation<Student, Partial<Student>>({
@@ -45,12 +49,13 @@ export const studentsApiSlice = createApi({
       }),
     }),
   }),
-})
+});
+
 
 export const {
-  createStudent,
-  getStudents,
-  getStudent,
-  updateStudent,
-  deleteStudent,
-} = studentsApiSlice.endpoints;
+  useCreateStudentMutation,
+  useGetStudentsQuery,
+  useGetStudentQuery,
+  useUpdateStudentMutation,
+  useDeleteStudentMutation,
+} = studentsApiSlice;

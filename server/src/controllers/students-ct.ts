@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { v4 as uuidv4 } from 'uuid';
 
 interface Student {
   id: string
@@ -11,8 +12,15 @@ interface Student {
 let students: Student[] = []; 
 
 export const createStudent = async (req: Request, res: Response) => {
-  const { student } = req.body;
+  const { fullname, birthdate, status, subjects } = req.body;
   try {
+    const student = {
+      id: uuidv4(),
+      fullname, 
+      birthdate, 
+      status, 
+      subjects
+    };
     students.push(student);
     return res
       .status(201)
@@ -23,9 +31,17 @@ export const createStudent = async (req: Request, res: Response) => {
 };
 
 export const updateStudent = async (req: Request, res: Response) => {
-  const { student } = req.body;
+  const { id, fullname, birthdate, status, subjects } = req.body;
   try {
-    return res.status(201).json({ student, message: "Student updated successfuly!" });
+    students.forEach(student => {
+      if (student.id === id) {
+        student.fullname = fullname;
+        student.birthdate = birthdate;
+        student.status = status;
+        student.subjects = subjects;
+      }
+    });
+    return res.status(201).json({ message: "Student updated successfuly!" });
   } catch (error) {
     return res.status(401).json({ error });
   }
@@ -40,9 +56,9 @@ export const getStudents = async (req: Request, res: Response) => {
 };
 
 export const getStudent = async (req: Request, res: Response) => {
-  const { id } = req.query;
-  const student = students.filter(student => student.id === id)[0];
+  const { id } = req.params;
   try {
+    const student = students.filter(student => student.id === id)[0];
     return res.status(201).json({ student });
   } catch (error) {
     return res.status(401).json({ error });
@@ -50,9 +66,9 @@ export const getStudent = async (req: Request, res: Response) => {
 };
 
 export const deleteStudent = async (req: Request, res: Response) => {
-  const { id } = req.query;
-  students = students.filter(student => student.id !== id);
+  const { id } = req.params;
   try {
+    students = students.filter(student => student.id !== id);
     return res.status(201).json({ message: "Student deleted successfuly!" });
   } catch (error) {
     return res.status(401).json({ error });
