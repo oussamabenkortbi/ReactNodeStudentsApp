@@ -1,5 +1,6 @@
-// Need to use the React-specific entry point to import `createApi`
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
+
+const API = import.meta.env.API_URL;
 
 interface Student {
   id: string
@@ -15,7 +16,7 @@ interface StudentsApiResponse {
 
 // Define a service using a base URL and expected endpoints
 export const studentsApiSlice = createApi({
-  baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:1337/api/v1/students" }),
+  baseQuery: fetchBaseQuery({ baseUrl: API + "/students" }),
   reducerPath: "studentsApi",
   // Tag types are used for caching and invalidation.
   tagTypes: ["Students", "Student"],
