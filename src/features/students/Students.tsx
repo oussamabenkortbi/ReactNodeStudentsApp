@@ -40,7 +40,7 @@ export const Students = () => {
   if (getStudents.isSuccess) {
     return (
       <div className={styles.container}>
-        <div className="flex flex-col my-14">
+        <div className="flex w-full flex-col my-14">
             <div className=" grid grid-cols-11 p-2 bg-zinc-100 rounded-lg bg-gray-2 sm:grid-cols-11">
                 <div className="p-2.5 xl:py-2 col-span-2">
                     <h5 className="text-lg font-semibold uppercase xsm:text-base">
