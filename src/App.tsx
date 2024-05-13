@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react"
 import "./App.css"
-import Table from "./components/Table"
 import { useState } from "react"
 import AddStudent from "./components/AddStudent"
+import { Students } from "./features/students/Students"
 
 const App = () => {
 
@@ -19,7 +19,7 @@ const App = () => {
           <h4 className=" font-black my-2 text-zinc-50 text-xl">Add Student</h4>
         </button>
       </div>
-      <Table />
+      <Students />
       {modalOpen && <AddStudent modalOpen={modalOpen} setModalOpen={setModalOpen}  />}
     </div>
   )

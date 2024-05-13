@@ -1,22 +1,33 @@
+import { useState } from "react"
+import styles from "./Students.module.css"
 import { PenLine, Trash2 } from "lucide-react"
-import { useState } from "react";
-import UpdateStudent from "./UpdateStudent";
+import UpdateStudent from "../../components/UpdateStudent"
+import { getStudents } from "./studentsApiEndpoints"
 
-const studentsData = [
-    {
-        id: 1,
-        fullname: 'John Doe',
-        dateOfBirth: new Date(),
-        subjects: ['Biology', 'Mathematics'],
-        status: 'paid',
-    },
-];
+export const Students = () => {
+  const [updateModal, setUpdateModal] = useState(false);
+  // Using a query hook automatically fetches data and returns query values
+  const { data, isError, isLoading, isSuccess } = getStudents.useQuery("");
 
-export default function Table() {
-
-    const [updateModal, setUpdateModal] = useState(false);
-
+  if (isError) {
     return (
+      <div>
+        <h1>There was an error!!!</h1>
+      </div>
+    )
+  }
+
+  if (isLoading || !data) {
+    return (
+      <div>
+        <h1>Loading...</h1>
+      </div>
+    )
+  }
+
+  if (isSuccess) {
+    return (
+      <div className={styles.container}>
         <div className="flex flex-col my-14">
             <div className=" grid grid-cols-11 p-2 bg-zinc-100 rounded-lg bg-gray-2 sm:grid-cols-11">
                 <div className="p-2.5 xl:py-2 col-span-2">
@@ -46,13 +57,13 @@ export default function Table() {
                 </div>
             </div>
 
-            {studentsData.map((student) => (
-                <div className="grid grid-cols-10 px-2 my-2 h-16 items-center sm:grid-cols-11 rounded-lg " key={student.id}>
+            {data.students.map((student) => (
+                <div key={student.id} className="grid grid-cols-10 px-2 my-2 h-16 items-center sm:grid-cols-11 rounded-lg ">
                     <div className=" p-2 xl:py-2 col-span-2">
-                        <p className="text-black text-lg ">{student.fullName}</p>
+                        <p className="text-black text-lg ">{student.fullname}</p>
                     </div>
                     <div className=" p-2 xl:py-2 col-span-2">
-                        <p className="text-blue-500 text-lg font-medium">{student.dateOfBirth}</p>
+                        <p className="text-blue-500 text-lg font-medium">{student.birthdate.slice(0, 10)}</p>
                     </div>
                     <div className=" p-2 xl:py-2 col-span-2">
                         <p className="text-black text-lg ">{student.subjects}</p>
@@ -87,5 +98,9 @@ export default function Table() {
                 </div>
             ))}
         </div>
+      </div>
     )
+  }
+
+  return null
 }
