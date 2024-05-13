@@ -32,13 +32,16 @@ const UpdateStudent = ({ student, updateModal, setUpdateModal }: any) => {
         }
     }
 
-    const handleSubjectsChange = (e) => {
-        const newSubjects = e.target.value.split('\n');
+    const handleSubjectsChange = (e: ChangeEvent<HTMLInputElement>, i: number) => {
+        e.preventDefault();
+        const newSubjects = [...subjects];
+        newSubjects[i] = e.target.value;
         setSubjects(newSubjects);
     };
 
-    const addSubject = () => {
-        setSubjects([...subjects, ""]); // Updateing an empty string as a new subject
+    const addSubject = (e: FormEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        setSubjects([...subjects, ""]);
     };
 
     return(
@@ -71,17 +74,19 @@ const UpdateStudent = ({ student, updateModal, setUpdateModal }: any) => {
                     <h3 className="mb-2 text-lg font-bold text-left mx-2 text-zinc-700">
                         Subjects
                     </h3>
-                    <textarea
-                        className="w-full resize-none rounded-md border border-gray-300 dark:bg-graydark p-2"
-                        rows={2}
-                        value={subjects.join('\n')}
-                        onChange={handleSubjectsChange}
-                    ></textarea>
+                    {
+                        subjects.map((subject, i) => <input
+                            key={i}
+                            className="w-full resize-none rounded-md border border-gray-300 dark:bg-graydark p-2"
+                            value={subject}
+                            onChange={(e) => handleSubjectsChange(e, i)}
+                        />)
+                    }
                     <button
                         className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                         onClick={addSubject}
                     >
-                        Update Subject
+                        Add Subject
                     </button>
                 </div>
                 <div className="mb-4 w-full">

@@ -16,15 +16,6 @@ app
   .use("*", (req: Request, res) => {
     res.status(404).json({ message: "You shouldn't be here" });
   })
-  .use((error, req: Request, res: Response, next: NextFunction) => {
-    console.log("--------", error.message, "--------");
-    const status = error.statusCode || 500;
-    res.status(status).json({
-      title: "Some thing went wrong!",
-      message:
-        error.message || "There is an error in server! please try again later",
-    });
-  });
 
 app.get("/", (req: Request, res) => {
   const __dirname = path.resolve();

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, MouseEvent } from 'react';
 
 interface ModalProps {
   isOpen: boolean;
@@ -6,17 +6,17 @@ interface ModalProps {
   children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, show, onClose, children }) => {
-  const popupRef = useRef(null);
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+  const popupRef = useRef<HTMLDivElement>(null);
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
+  const handleClickOutside = (ev: globalThis.MouseEvent) => {
+    if (popupRef.current && !popupRef.current.contains(ev.target as Node)) {
       onClose();
     }
   };
 
   useEffect(() => {
-    if (show) {
+    if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     } else {
       document.removeEventListener('mousedown', handleClickOutside);
@@ -25,8 +25,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, show, onClose, children }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [show, onClose]);
-
+  }, [isOpen, onClose]);
 
   return (
     <>
