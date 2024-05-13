@@ -1,66 +1,26 @@
+import { Plus } from "lucide-react"
 import "./App.css"
-import { Counter } from "./features/counter/Counter"
-import { Quotes } from "./features/quotes/Quotes"
-import logo from "./logo.svg"
+import Table from "./components/Table"
+import { useState } from "react"
+import AddStudent from "./components/AddStudent"
 
 const App = () => {
+
+  const [modalOpen, setModalOpen] = useState(false);
+  
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <Quotes />
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://reselect.js.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Reselect
-          </a>
-        </span>
+        <h2 className="text-blue-500 font-black text-4xl">Admin Dashboard</h2>
       </header>
+      <div className=" absolute w-full py-4 items-end justify-end flex">
+        <button onClick={()=> setModalOpen(!modalOpen)} className=" relative bottom-5 right-8 flex items-center justify-center rounded-xl self-end hover:bg-blue-300 bg-blue-500 px-3 py-1">
+          <Plus size={24} color="white" />
+          <h4 className=" font-black my-2 text-zinc-50 text-xl">Add Student</h4>
+        </button>
+      </div>
+      <Table />
+      {modalOpen && <AddStudent modalOpen={modalOpen} setModalOpen={setModalOpen}  />}
     </div>
   )
 }
